@@ -1,6 +1,30 @@
-function transient_search, imcube
+;+
+; NAME:
+;    TRANSIENT_SEARCH
+;PURPOSE: 
+;    Look at count variations for each pixel in an input NuSTAR image
+;    cube; return two statistics that can point to transient events.    
+;INPUTS:
+;   Image cube
+;OUTPUTS:
+;   Structure containing several fields:
+;     Rdiff_matrix - A matrix of rdiff values, where rdiff is the
+;                  difference of ratios: Rdiff = R1 - avg(R2, R3)
+;     R1 = N(source)/N(background) for time 't'
+;     R2 = N(source)/N(background) for time 't+1'
+;     R3 = N(source)/N(background) for time 't-1' 
+;     N(background) is sum of all pixels adjacent to the source pixel
+;
+;     Diff_matrix - Matrix of diff values, where diff is defined simply
+;                 as: Diff = N1 - avg(N2, N3)
+;     N1 = # counts in pixel @ time 't' 
+;     N2 = # counts in pixel @ time 't+1'
+;     N3 = # counts in pixel @ time 't-1'
+;     Individual matrices are included for each t, t+1, t-1 
+;     The min and max pixel indices where N>0 counts are present are given
+;     by the cmin, cmax, rmin, and rmax matrices
 
-;;Execute a search for transient brightenings
+function transient_search, imcube
 
 xn = (size(imcube))[1]
 yn = (size(imcube))[2]
