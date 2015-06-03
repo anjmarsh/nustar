@@ -1,16 +1,28 @@
+;+
+; NAME:
+;    ADD_FLARE_2MK
+;PURPOSE: 
+;   Add a simulated 2MK flare, scaled by arbitrary amount, to
+;   an image cube of real NuSTAR data with a certain pixel size
+;
+;INPUTS:
+;   Image cube, Frame #
+;OPTIONAL:
+;   scaling, pixel size, shift, energy range
+;OUTPUTS:
+;   Image cube with flare added to the desired frame
+
 function add_flare_2MK, imcube, frame, scale=scale, pix_size=pix_size,$
 move=move, erange=erange
 
-;;Function to add a 2MK flare, scaled by arbitrary amount, to
-;an image cube of real NuSTAR data with a certain pixel size
-
 bkg_cts = total(imcube[*,*,frame])
 
-;**** Simulation ran for 10s, scale up to 100 (search timescale) ****;
+;* Read in simulated flare fits file*;
 f = mrdfits('/home/andrew/nusim/Solar/flare_sim_2MK_10s.events.fits',1,fh)
-a = where(f.module eq 1)
+a = where(f.module eq 1)   ;Events from 1 telescope (FPMA)
 fa = f[a]
 
+;Select energy range
 if n_elements(erange) ne 0 then begin
    emin = min(erange)
    emax = max(erange)
@@ -19,8 +31,8 @@ if n_elements(erange) ne 0 then begin
    fa = fa[inrange]
 endif
 
-SetDefaultValue, scale, 0.01
-SetDefaultValue, pix_size, 58
+SetDefaultValue, scale, 0.01  ;reasonable starting point 
+SetDefaultValue, pix_size, 58  ;NuSTAR HPD
 
 det1x = fa.det1x
 det1y = fa.det1y
@@ -28,7 +40,10 @@ det1y = fa.det1y
 bin = 0.6 / 12.3 * pix_size ;correct binning for NuSIM image 
 nf = hist_2d(det1x, det1y, min1=-20, max1=20, min2=-20, max2=20,$
 bin1=bin, bin2=bin)
-nf = nf * scale * 10 * 0.04
+nf = nf * scale * 10 * 0.04 
+;livetime (0.04) & temporal (10) scale factors
+;#Counts seen from flare in 10*10 seconds, reduced by LT 
+;eventually change so that LT is extracted from appropriate hk file
 
 s = imcube[*,*,frame]
 
@@ -36,6 +51,7 @@ if n_elements(move) ne 0 then begin
    nf = shift(nf, move)
 endif
 
+;Add flare image to the imcube image
 if ((size(nf))[1] eq (size(s))[1]) && ((size(nf))[2] eq (size(s))[2]) then begin
    s = s + nf
 endif else begin
@@ -49,10 +65,10 @@ endif else begin
 endelse
 
 fimcube = imcube
+;Normalize so that number of counts in frame stays constant 
 fimcube[*,*,frame] = s * ( bkg_cts / total(s) )
 
 return, fimcube 
-
 
 
 END

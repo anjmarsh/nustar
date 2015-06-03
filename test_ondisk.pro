@@ -1,9 +1,23 @@
+;+
+; NAME:
+;    TEST_ONDISK
+;PURPOSE: 
+;   Determine if any part of a given pixel in a NuSTAR sky 
+;   image cube is on the solar disk.
+;   
+;INPUTS:
+;   Image cube, pixel indices
+;OPTIONAL:
+;   Pixel size. Default is 58"
+;OUTPUTS:
+;   1 for on-disk, 0 for off-disk
+
 function test_ondisk, im, indices, pix_size=pix_size
 
 SetDefaultValue, pix_size, 58
 
-sky_pix = 2.45810736       ;arcseconds 
-xcen = 1500
+sky_pix = 2.45810736       ;software pixel in arcseconds 
+xcen = 1500    
 ycen = 1500
 
 xmin = im.minx 
