@@ -49,10 +49,11 @@ title='Diff Distribution, with Flare'
 
 ;;Sensitivity calculation for 2MK input spectrum. Every pixel, every
 ;;frame (takes a long time to run)
-sarray2 = sensitivity_th_low(im_th)
-
-;;Sensitivity calculation for 5MK input spectrum
-;;sarray = sensitivity_th_high(im_th,0)
+sarray2 = sensitivity_th2(im_th)
+;sarray3 = sensitivity_th3(im_th)  ;3MK spectrum
+;sarray4 = sensitivity_th4(im_th)  ;4MK spectrum
+;sarray5 = sensitivity_th5(im_th)  ;5MK spectrum
+;;etc. 
 
 ;Find on-disk positions in the image cube 
 tod = imc_th[*,*,0]
@@ -69,7 +70,5 @@ plot, ev, f2, /ylog, yr=[0.01, 1d6], xr=[1,10],$
 xtitle='Energy (keV)',ytitle='Photon Flux',title='2MK Thermal Spectrum'
 
 i = where((ev ge 2.5) and (ev le 4.0))
-
 print, total(f2(i)) / 1.5  ;average flux of 2MK spectrum from 2.5-4 keV
-
 print, average(sarray2[ones]) * average(f2(i))  ;Flux upper limit! (?)
