@@ -72,3 +72,7 @@ xtitle='Energy (keV)',ytitle='Photon Flux',title='2MK Thermal Spectrum'
 i = where((ev ge 2.5) and (ev le 4.0))
 print, total(f2(i)) / 1.5  ;average flux of 2MK spectrum from 2.5-4 keV
 print, average(sarray2[ones]) * average(f2(i))  ;Flux upper limit! (?)
+;print, average(sarray3[ones]) * average(f3(i))
+;print, average(sarray4[ones]) * average(f4(i))
+;print, average(sarray5[ones]) * average(f5(i))
+
