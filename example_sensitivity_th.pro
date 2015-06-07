@@ -15,6 +15,8 @@ restore, 'evtfiles.sav' , /ver
 ;Use data from Obs2, Orbit 4 Field 4 - NP quiet-Sun pointing
 ;Other users will need to edit string to point to correct directory
 print, evt4a
+print, strmid(evt4a, 31)
+
 im_th = make_imcube(evt4a, 100, 58, erange=[2.5,4])
 imc_th = im_th.imcube
 
@@ -47,17 +49,27 @@ title='Diff Distribution, with Flare'
 
 ;;Sensitivity calculation for 2MK input spectrum. Every pixel, every
 ;;frame (takes a long time to run)
-sarray = sensitivity_th_low(im_th)
+sarray2 = sensitivity_th_low(im_th)
 
 ;;Sensitivity calculation for 5MK input spectrum
 ;;sarray = sensitivity_th_high(im_th,0)
 
 ;Find on-disk positions in the image cube 
 tod = imc_th[*,*,0]
-for i=0,n_elements(tod)-1 do begin 
-   tod[i] = test_ondisk(im_th, array_indices(tod,i))
-endfor
+for i=0,n_elements(tod)-1 do tod[i] = test_ondisk(im_th, array_indices(tod,i))
 
 ;Print average scaling for on-disk pixels
 ones = where(tod ne 0) 
-print, average(sarray[ones])
+print, average(sarray2[ones])
+
+;Determine average flux upper limit from scaling + input spectrum
+restore,'flare_sim_thermal.sav',/v   ;restore simulated flare spectra
+
+plot, ev, f2, /ylog, yr=[0.01, 1d6], xr=[1,10],$
+xtitle='Energy (keV)',ytitle='Photon Flux',title='2MK Thermal Spectrum'
+
+i = where((ev ge 2.5) and (ev le 4.0))
+
+print, total(f2(i)) / 1.5  ;average flux of 2MK spectrum from 2.5-4 keV
+
+print, average(sarray2[ones]) * average(f2(i))  ;Flux upper limit! (?)
