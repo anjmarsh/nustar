@@ -1,8 +1,8 @@
 ;+
 ; NAME:
-;    ADD_FLARE6
+;    ADD_FLARE10
 ;PURPOSE: 
-;   Add a simulated 6MK flare, scaled by arbitrary amount, to
+;   Add a simulated 10MK flare, scaled by arbitrary amount, to
 ;   an image cube of real NuSTAR data with a certain pixel size
 ;
 ;INPUTS:
@@ -12,14 +12,14 @@
 ;OUTPUTS:
 ;   Image cube with flare added to the desired frame
 
-function add_flare6, imcube, frame, scale=scale, dwell=dwell,$
-   pix_size=pix_size, move=move, erange=erange
+function add_flare10, imcube, frame, scale=scale, dwell=dwell,$
+    pix_size=pix_size, move=move, erange=erange
 
 SetDefaultValue, dwell, 100.
 bkg_cts = total(imcube[*,*,frame])
 
 ;* Read in simulated flare fits file*;
-f = mrdfits('/home/andrew/nusim/Solar/flare_sim_6MK_1s.events.fits',1,fh)
+f = mrdfits('/home/andrew/nusim/Solar/flare_sim_10MK_1s.events.fits',1,fh)
 a = where(f.module eq 1)   ;Events from 1 telescope (FPMA)
 fa = f[a]
 
