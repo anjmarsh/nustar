@@ -53,7 +53,11 @@ sarray2 = sensitivity_th2(im_th)
 ;sarray3 = sensitivity_th3(im_th)  ;3MK spectrum
 ;sarray4 = sensitivity_th4(im_th)  ;4MK spectrum
 ;sarray5 = sensitivity_th5(im_th)  ;5MK spectrum
-;;etc. 
+;sarray6 = sensitivity_th6(im_th)  ;6MK spectrum
+;sarray7 = sensitivity_th7(im_th)  ;7MK spectrum
+;sarray8 = sensitivity_th8(im_th)  ;8MK spectrum
+;sarray9 = sensitivity_th9(im_th)  ;9MK spectrum
+;sarray10 = sensitivity_th10(im_th)  ;10MK spectrum
 
 ;Find on-disk positions in the image cube 
 tod = imc_th[*,*,0]
@@ -61,7 +65,7 @@ for i=0,n_elements(tod)-1 do tod[i] = test_ondisk(im_th, array_indices(tod,i))
 
 ;Print average scaling for on-disk pixels
 ones = where(tod ne 0) 
-print, average(sarray2[ones])
+print, average(sarray6[ones])
 
 ;Determine average flux upper limit from scaling + input spectrum
 restore,'flare_sim_thermal.sav',/v   ;restore simulated flare spectra
@@ -75,4 +79,9 @@ print, average(sarray2[ones]) * average(f2(i))  ;Flux upper limit! (?)
 ;print, average(sarray3[ones]) * average(f3(i))
 ;print, average(sarray4[ones]) * average(f4(i))
 ;print, average(sarray5[ones]) * average(f5(i))
+;print, average(sarray6[ones]) * average(f6(i))
+;print, average(sarray7[ones]) * average(f7(i))
+;print, average(sarray8[ones]) * average(f8(i))
+;print, average(sarray9[ones]) * average(f9(i))
+;print, average(sarray10[ones]) * average(f10(i))
 
