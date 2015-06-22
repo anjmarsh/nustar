@@ -17,6 +17,10 @@ function add_flare7, imcube, frame, scale=scale, dwell=dwell,$
 
 common flare7, flare7
 
+if n_elements(flare7) eq 0 then begin
+flare7 = mrdfits('/home/andrew/nusim/Solar/flare_sim_7MK_1s.events.fits',1,fh)
+endif
+
 bkg_cts = total(imcube[*,*,frame])
 
 ;* Read in simulated flare fits file*;

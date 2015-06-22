@@ -17,6 +17,10 @@ function add_flare2, imcube, frame, scale=scale, dwell=dwell,$
 
 common flare2, flare2
 
+if n_elements(flare2) eq 0 then begin
+flare2 = mrdfits('/home/andrew/nusim/Solar/flare_sim_2MK_10s.events.fits',1,fh)
+endif
+
 bkg_cts = total(imcube[*,*,frame])
 
 a = where(flare2.module eq 1)   ;Events from 1 telescope (FPMA)
