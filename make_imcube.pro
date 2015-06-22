@@ -7,11 +7,13 @@
 ;   Event file name, dwell (integration time per frame, in sec), pixel size
 ;   (in arcseconds)
 ;OPTIONAL:
-;   Energy range (in keV)
+;   Energy range (in keV), Start & Stop times (in NuSTAR clock units)
 ;OUTPUTS:
 ;   Image Cube 
 
-function make_imcube, evtfile, dwell, pix_size, erange=erange
+function make_imcube, evtfile, dwell, pix_size, erange=erange,$
+   tstart=tstart, tstop=tstop
+
 
 ;Read in event file
 evt = mrdfits(evtfile, 1,evth)
@@ -27,6 +29,13 @@ npix_size = abs(sxpar(evth,'TCDLT'+xpos))
 inrange = where(evt.pi ge 0)
 evt = evt[inrange]
 
+;Select time range
+SetDefaultValue, tstart, min(evt.time)
+SetDefaultValue, tstop, max(evt.time)
+tstart = tstart[0]  ;want double, not an array
+tstop = tstop[0]   ;want double, not an array
+evt = evt[where((evt.time ge tstart) and (evt.time le tstop))]
+
 ;Select energy range
 if n_elements(erange) ne 0 then begin
    emin = min(erange)
@@ -36,18 +45,18 @@ if n_elements(erange) ne 0 then begin
    evt = evt[inrange]
 endif
 
-;Min and max x/y values, to use in binning the image
-minx = min(evt.x)
-maxx = max(evt.x)
-miny = min(evt.y)
-maxy = max(evt.y)
-
 ;Set up time variables
 min_evt_time = min(evt.time)
 thist = histogram(evt.time - min_evt_time, min = 0, binsize = dwell, reverse_indices = tinds)
 nframes = n_elements(thist) 
 tindex = findgen(n_elements(thist)) * dwell
 stop_t = n_elements(tindex) - 1 
+
+;Min and max x/y values, to use in binning the image
+minx = min(evt.x)
+maxx = max(evt.x)
+miny = min(evt.y)
+maxy = max(evt.y)
 
 ;Select appropriate spatial binning
 bin = round(pix_size / npix_size)
@@ -70,7 +79,7 @@ for t = 0,stop_t - 1 do begin
    if t eq 0 then imcube = im
    if t gt 0 then imcube = [ [[imcube]], [[im]] ]
 
-   endfor
+endfor
 
 imstruct = create_struct( 'imcube',imcube,'minx',minx,'maxx',maxx,'miny',$
                          miny,'maxy',maxy )

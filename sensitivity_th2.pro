@@ -21,6 +21,10 @@
 
 function sensitivity_th2, im, frame=frame
 
+common flare2, flare2
+
+flare2 = mrdfits('/home/andrew/nusim/Solar/flare_sim_2MK_10s.events.fits',1,fh)
+
 SetDefaultValue, frame, 0
 
 dwell_th = 100  ;temporal binning - 100s for thermal emission
@@ -62,12 +66,12 @@ for xshift = -flare_peak[0], xshiftpos-1 do begin
       print, 'Initial maximum with flare = ' + string(fix(maxdi)) 
 
       while (maxdi GT 2*maxa) do begin  ;loop until max = 2*noflare_diff_max
-         si = si - 0.0005 ;scale down in increments
+         si = si - 0.0001 ;scale down in increments
          af = add_flare2(ima, frame, scale=si, pix_size=pix_size, move=[xshift,yshift], erange=erange)
          tf = transient_search(af) 
          dff = tf.diff_matrix 
          maxdi = max(dff)
-         print,maxdi
+         print,maxdi,'   ',si
       endwhile
 
       x = flare_peak[0] + xshift 

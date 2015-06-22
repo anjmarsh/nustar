@@ -31,6 +31,7 @@ ima = im.imcube
 ta = transient_search(ima)
 da = ta.diff_matrix 
 maxa = max(da) ;diff_max for no-flare case
+print, maxa
 
 xlen = (size(ima))[1]
 ylen = (size(ima))[2]
@@ -39,7 +40,7 @@ sarray = float( ima * 0)
 
 ;figure out correct flare pixel indices
 si = 1
-ai = add_flare4(ima, frame, scale=si, pix_size=pix_size, erange=erange)
+ai = add_flare=2(ima, frame, scale=si, pix_size=pix_size, erange=erange)
 
 w = where( ai[*,*,frame] eq max(ai[*,*,frame]) )
 flare_peak = array_indices( ai[*,*,frame], w )
@@ -56,19 +57,19 @@ yshiftpos = ylen - flare_peak[1]
 
       xshift = 0
       yshift = 0      
-      si = 0.001  ;initial scaling
-      ai = add_flare9(ima, frame, scale=si, pix_size=pix_size, move=[xshift,yshift], erange=erange)   ;add flare w/ initial scaling
+      si = 0.01  ;initial scaling
+      ai = add_flare2(ima, frame, scale=si, pix_size=pix_size, move=[xshift,yshift], erange=erange)   ;add flare w/ initial scaling
       ti = transient_search(ai) 
       dfi = ti.diff_matrix 
       maxdi = max(dfi) ;initial diff_max
       
       ;open text file to write values 
-      openw, lun, 'scaling_vs_diffmax3_9MK.txt', /get_lun
+      openw, lun, 'scaling_vs_diffmax_2MK.txt', /get_lun
       .r
       while (maxdi GT 2*maxa) do begin ;loop until max = 2*noflare_diff_max
          printf, lun, si, '   ', maxdi
-         si = si - 0.00005        ;scale down in 0.01 increments
-         af = add_flare9(ima, frame, scale=si, pix_size=pix_size, move=[xshift,yshift], erange=erange)   ;add flare w/ current si value
+         si = si - 0.00001        ;scale down in increments
+         af = add_flare2(ima, frame, scale=si, pix_size=pix_size, move=[xshift,yshift], erange=erange)   ;add flare w/ current si value
          tf = transient_search(af) 
          dff = tf.diff_matrix 
          maxdi = max(dff)

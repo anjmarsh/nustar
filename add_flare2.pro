@@ -8,20 +8,21 @@
 ;INPUTS:
 ;   Image cube, Frame #
 ;OPTIONAL:
-;   scaling, pixel size, shift, energy range
+;   scaling, pixel size, shift, energy range, livetime correction
 ;OUTPUTS:
 ;   Image cube with flare added to the desired frame
 
 function add_flare2, imcube, frame, scale=scale, dwell=dwell,$
-   pix_size=pix_size, move=move, erange=erange
+   pix_size=pix_size, move=move, erange=erange, livetime=livetime
 
-SetDefaultValue, dwell, 100.
+common flare2, flare2
+
 bkg_cts = total(imcube[*,*,frame])
 
-;* Read in simulated flare fits file*;
-f = mrdfits('/home/andrew/nusim/Solar/flare_sim_2MK_10s.events.fits',1,fh)
-a = where(f.module eq 1)   ;Events from 1 telescope (FPMA)
-fa = f[a]
+a = where(flare2.module eq 1)   ;Events from 1 telescope (FPMA)
+fa = flare2[a]
+;b = where(flare2.module eq 2)    ;Events from FPMB
+;fb = flare2[b]
 
 ;Select energy range
 if n_elements(erange) ne 0 then begin
@@ -32,8 +33,10 @@ if n_elements(erange) ne 0 then begin
    fa = fa[inrange]
 endif
 
+SetDefaultValue, dwell, 100.
 SetDefaultValue, scale, 0.01  ;reasonable starting point 
 SetDefaultValue, pix_size, 58  ;NuSTAR HPD
+SetDefaultValue, livetime, 0.04  ;valid for obs2 NP pointing 
 
 det1x = fa.det1x
 det1y = fa.det1y
@@ -41,8 +44,8 @@ det1y = fa.det1y
 bin = 0.6 / 12.3 * pix_size ;correct binning for NuSIM image 
 nf = hist_2d(det1x, det1y, min1=-20, max1=20, min2=-20, max2=20,$
 bin1=bin, bin2=bin)
-nf = nf * scale * (dwell/10.) * 0.04 
-;livetime (0.04) & temporal (dwell) scale factors
+nf = nf * scale * (dwell/10.) * livetime
+;livetime & temporal (dwell) scale factors
 ;Counts seen from flare in dwell # seconds, reduced by LT 
 ;eventually change so that LT is extracted from appropriate hk file
 

@@ -3,7 +3,7 @@
 ;    SENSITIVITY_TH4
 ;PURPOSE: 
 ;   Calculate flare scaling matrix corresponding to an input NuSTAR
-;   image cube. Simulated 3MK flare is added to input image cube, then
+;   image cube. Simulated 4MK flare is added to input image cube, then
 ;   scalings are calculated to give a 'barely detectable' event. 
 ;
 ;   This is defined as the  scaling that yields 
@@ -20,6 +20,10 @@
 ;   input image cube 
 
 function sensitivity_th4, im, frame=frame
+
+common flare4, flare4
+
+flare4 = mrdfits('/home/andrew/nusim/Solar/flare_sim_4MK_1s.events.fits',1,fh)
 
 SetDefaultValue, frame, 0
 
@@ -54,7 +58,7 @@ for frame=0,n_frames-1 do begin
 for xshift = -flare_peak[0], xshiftpos-1 do begin
    for yshift = -flare_peak[1], yshiftpos-1 do begin 
       
-      si = 0.01  ;initial scaling
+      si = 0.005  ;initial scaling
       ai = add_flare4(ima, frame, scale=si, pix_size=pix_size, move=[xshift,yshift], erange=erange)
       ti = transient_search(ai) 
       dfi = ti.diff_matrix 
@@ -62,7 +66,7 @@ for xshift = -flare_peak[0], xshiftpos-1 do begin
       print, 'Initial maximum with flare = ' + string(fix(maxdi)) 
 
       while (maxdi GT 2*maxa) do begin  ;loop until max = 2*noflare_diff_max
-         si = si - 0.0005 ;scale down in increments
+         si = si - 0.0001 ;scale down in increments
          af = add_flare4(ima, frame, scale=si, pix_size=pix_size, move=[xshift,yshift], erange=erange)
          tf = transient_search(af) 
          dff = tf.diff_matrix 
