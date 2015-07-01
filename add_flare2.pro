@@ -53,28 +53,37 @@ nf = nf * scale * (dwell/10.) * livetime
 ;Counts seen from flare in dwell # seconds, reduced by LT 
 ;eventually change so that LT is extracted from appropriate hk file
 
-s = imcube[*,*,frame]
+im0 = imcube[*,*,frame]
 
 if n_elements(move) ne 0 then begin
    nf = shift(nf, move)
 endif
 
 ;Add flare image to the imcube image
-if ((size(nf))[1] eq (size(s))[1]) && ((size(nf))[2] eq (size(s))[2]) then begin
-   s = s + nf
+if ((size(nf))[1] eq (size(im0))[1]) && ((size(nf))[2] eq (size(im0))[2]) then begin
+   im0 = im0 + nf
 endif else begin
-   s1 = size(s,/dimensions)
-   s2 = size(nf,/dimensions)
-   g = fltarr(s2[0],abs(s1[1]-s2[1]))
-   fc = [[nf],[g]]
-   j = fltarr(abs(s1[0]-s2[0]),s1[1])
-   fc = [fc,j]
-   s = s + fc
+   sd = size(im0,/dimensions)
+   sf = size(nf,/dimensions)
+   if sd[0] gt sf[0] then begin
+      ax = fltarr(sd[0] - sf[0], sf[1])
+      nf = [nf,ax]
+      sf = size(nf,/dimensions)
+   endif
+   if sd[1] gt sf[1] then begin
+      ay = fltarr(sf[0], sd[1] - sf[1])
+      nf = [[nf],[ay]]
+   endif
+   if sd[0] lt sf[0] then nf = nf[0:sd[0]-1,*]
+   if sd[1] lt sf[1] then nf = nf[*, 0:sd[1]-1]
+
+   im0 = im0 + nf
+   
 endelse
 
 fimcube = imcube
 ;Normalize so that number of counts in frame stays constant 
-fimcube[*,*,frame] = s * ( bkg_cts / total(s) )
+fimcube[*,*,frame] = im0 * ( bkg_cts / total(im0) )
 
 return, fimcube 
 
