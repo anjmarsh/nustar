@@ -19,7 +19,7 @@
 ;   Matrix of scaling factors for every frame and every pixel in the
 ;   input image cube 
 
-function sensitivity_th3, im, frame=frame
+function sensitivity_th3, ima, frame=frame
 
 common flare3, flare3 
 
@@ -31,7 +31,6 @@ dwell_th = 100  ;temporal binning - 100s for thermal emission
 pix_size = 58  ;spatial binning - NuSTAR HPD
 erange = [2.5,4]  ;energy range for thermal
 
-ima = im.imcube
 ta = transient_search(ima)
 da = ta.diff_matrix 
 maxa = max(da) ;diff_max for no-flare case
@@ -58,7 +57,7 @@ for frame=0,n_frames-1 do begin
 for xshift = -flare_peak[0], xshiftpos-1 do begin
    for yshift = -flare_peak[1], yshiftpos-1 do begin 
       
-      si = 0.01  ;initial scaling
+      si = 0.02  ;initial scaling
       ai = add_flare3(ima, frame, scale=si, pix_size=pix_size, move=[xshift,yshift], erange=erange)
       ti = transient_search(ai) 
       dfi = ti.diff_matrix 
