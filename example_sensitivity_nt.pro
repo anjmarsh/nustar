@@ -10,10 +10,6 @@
 
 restore, 'evtfiles.sav' , /ver
 ;Use data from Obs2, Orbit 4 Field 4 - NP quiet-Sun pointing
-;Other users will need to edit string to point to correct directory
-print, evt4a
-print, strmid(evt4a, 31)
-
 im_nt = make_imcube(evt4a, 10, 58, erange=[5,10])
 imc_nt = im_nt.imcube
 
@@ -39,7 +35,7 @@ plot, n, h, psym=10, thick=2, /ylog, yr=[1,1000],$
 xtitle='Diff Value',ytitle='# of Occurrences',$
 title='Diff Distribution, with Flare' 
 
-sarray = sensitivity_nt(im_nt)
+sarray = sensitivity_nt(imc_nt, 0)
 
 ;Find on-disk positions in the image cube 
 tod = imc_nt[*,*,0]

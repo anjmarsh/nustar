@@ -49,15 +49,15 @@ title='Diff Distribution, with Flare'
 
 ;;Sensitivity calculation for 2MK input spectrum. Every pixel, every
 ;;frame (takes a long time to run)
-sarray2 = sensitivity_th2(im_th)
-;sarray3 = sensitivity_th3(im_th)  ;3MK spectrum
-;sarray4 = sensitivity_th4(im_th)  ;4MK spectrum
-;sarray5 = sensitivity_th5(im_th)  ;5MK spectrum
-;sarray6 = sensitivity_th6(im_th)  ;6MK spectrum
-;sarray7 = sensitivity_th7(im_th)  ;7MK spectrum
-;sarray8 = sensitivity_th8(im_th)  ;8MK spectrum
-;sarray9 = sensitivity_th9(im_th)  ;9MK spectrum
-;sarray10 = sensitivity_th10(im_th)  ;10MK spectrum
+sarray2 = sensitivity_th2(imc_th)
+;sarray3 = sensitivity_th3(imc_th)  ;3MK spectrum
+;sarray4 = sensitivity_th4(imc_th)  ;4MK spectrum
+;sarray5 = sensitivity_th5(imc_th)  ;5MK spectrum
+;sarray6 = sensitivity_th6(imc_th)  ;6MK spectrum
+;sarray7 = sensitivity_th7(imc_th)  ;7MK spectrum
+;sarray8 = sensitivity_th8(imc_th)  ;8MK spectrum
+;sarray9 = sensitivity_th9(imc_th)  ;9MK spectrum
+;sarray10 = sensitivity_th10(imc_th)  ;10MK spectrum
 
 ;Find on-disk positions in the image cube 
 tod = imc_th[*,*,0]
