@@ -1,18 +1,20 @@
+dir = '~/nustar/Solar/obs2/'
 
 ;Load in scaling values for simulated thermal flare spectra,
 ;calculated for 2.5 - 4 keV 
-restore, 'sensitivity_th2_evt4a.sav'  ;2 MK spectrum
-restore, 'sensitivity_th3_evt4a.sav'  ;3 MK spectrum
-restore, 'sensitivity_th4_evt4a.sav'  ;4 MK spectrum
-restore, 'sensitivity_th5_evt4a.sav'  ;5 MK spectrum
-restore, 'sensitivity_th6_evt4a.sav'  ;6 MK spectrum
-restore, 'sensitivity_th7_evt4a.sav'  ;7 MK spectrum
-restore, 'sensitivity_th8_evt4a.sav'  ;8 MK spectrum
-restore, 'sensitivity_th9_evt4a.sav'  ;9 MK spectrum
-restore, 'sensitivity_th10_evt4a.sav'  ;10 MK spectrum
-restore, 'sensitivity_evt4a_nt.sav'  ;flat spectrum 5-10 keV
+restore, dir+'sensitivity_th2_evt4a.sav',/v  ;2 MK spectrum
+restore, dir+'sensitivity_th3_evt4a.sav',/v  ;3 MK spectrum
+restore, dir+'sensitivity_th4_evt4a.sav',/v  ;4 MK spectrum
+restore, dir+'sensitivity_th5_evt4a.sav',/v  ;5 MK spectrum
+restore, dir+'sensitivity_th6_evt4a.sav',/v  ;6 MK spectrum
+restore, dir+'sensitivity_th7_evt4a.sav',/v  ;7 MK spectrum
+restore, dir+'sensitivity_th8_evt4a.sav',/v  ;8 MK spectrum
+restore, dir+'sensitivity_th9_evt4a.sav',/v  ;9 MK spectrum
+restore, dir+'sensitivity_th10_evt4a.sav',/v  ;10 MK spectrum
+restore, dir+'sensitivity_evt4a_nt.sav',/v  ;flat spectrum 5-10 keV
 
-;Select on-disk events
+;Select on-disk events. Calculated using test_ondisk.pro and added to
+;the 2MK save file 
 s2 = sarray2[ones]
 s3 = sarray3[ones]
 s4 = sarray4[ones]
@@ -54,11 +56,11 @@ linestyle=[0,0,0,0,0,0,0,0,0], /top,/right, box=0
 ;write_png,'scaling_thermal.png',tvrd(/true)
 
 
-;Restore simulated flare spectra to calculate EM / energy
-restore, 'flare_sim_thermal.sav', /v
+;;;;;*; EMISSION MEASURE ;*;;;;;
+
+;EM values for simulated flares at each temperature
 flare_em = [10.,1d-1,1d-1,1d-2,1d-2,1d-2,1d-2,1d-2,1d-2]   ;*1.d49
 
-;;;;;*; EMISSION MEASURE ;*;;;;;
 em2 = double(sarray2[ones]) * flare_em[0]
 em3 = double(sarray3[ones]) * flare_em[1]
 em4 = double(sarray4[ones]) * flare_em[2]
@@ -109,6 +111,10 @@ linestyle=[0,0,0,0,0,0,0,0,0], /top,/right, box=0
 
 
 ;;;;;*; ENERGY IN ERGS ;*;;;;;
+
+;Restore simulated flare spectra to calculate energies
+restore, 'flare_sim_thermal.sav', /v
+
 ergs2 = n2/flare_em[0]*total(ev*f2)*100*(max(ev)-min(ev))*1.6d-9*4*!dpi*(1.5d11)^2     
 ergs3 = n3/flare_em[1]*total(ev*f3)*100*(max(ev)-min(ev))*1.6d-9*4*!dpi*(1.5d11)^2
 ergs4 = n4/flare_em[2]*total(ev*f4)*100*(max(ev)-min(ev))*1.6d-9*4*!dpi*(1.5d11)^2

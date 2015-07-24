@@ -21,9 +21,10 @@
 
 function sensitivity_th9, ima, frame=frame
 
-common flare9, flare9
+common flare9, flare_dir, flare9
 
-flare9 = mrdfits('/home/andrew/nusim/Solar/flare_sim_9MK_1s.events.fits',1,fh)
+flare_dir = '/home/andrew/nusim/Solar/'
+flare9 = mrdfits(flare_dir+'flare_sim_9MK_1s.events.fits',1,fh)
 
 SetDefaultValue, frame, 0
 

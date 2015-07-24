@@ -18,7 +18,8 @@ function add_flare6, imcube, frame, scale=scale, dwell=dwell,$
 common flare6, flare6
 
 if n_elements(flare6) eq 0 then begin
-flare6 = mrdfits('/home/andrew/nusim/Solar/flare_sim_6MK_1s.events.fits',1,fh)
+flare_dir = '/home/andrew/nusim/Solar/'
+flare6 = mrdfits(flare_dir+'flare_sim_6MK_1s.events.fits',1,fh)
 endif
 
 bkg_cts = total(imcube[*,*,frame])
