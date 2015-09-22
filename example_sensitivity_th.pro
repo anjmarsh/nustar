@@ -13,15 +13,12 @@ restore, 'evtfiles.sav' , /ver
 ;Use data from Obs2, Orbit 4, Field 4; QS pointing
 ;Other users will need to Edit evt4a to point to Correct Directory
 print, evt4a
-print, strmid(evt4a, 31)   ;NuSTAR event directory
 
 ;Make image cube of event file, dwell=100s, pixel=58", E=2.5-4 keV
 im_th = make_imcube(evt4a, 100, 58, erange=[2.5,4])
 imc_th = im_th.imcube
 
-tth = transient_search(imc_th)  ;run transient search
-dm_th = tth.diff_matrix   ;diff parameter
-pmm, dm_th
+dm_th = calc_diff_imcube(imc_th)  ;calculate diff parameter
 
 ;Plot distribution of the diff parameter (for non-flaring case)
 h_th = histogram(dm_th, nbins=50, locations=n_th)
